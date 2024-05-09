@@ -5,17 +5,17 @@ import (
 	"slices"
 )
 
-type dispatcher struct {
+type Dispatcher struct {
 	listeners map[Type][]listener
 }
 
-func NewDispatcher() *dispatcher {
-	return &dispatcher{
+func NewDispatcher() *Dispatcher {
+	return &Dispatcher{
 		listeners: make(map[Type][]listener),
 	}
 }
 
-func Dispatch[T any](d *dispatcher, evtType Type, evt T) bool {
+func Dispatch[T any](d *Dispatcher, evtType Type, evt T) bool {
 	listeners := d.listeners[evtType]
 
 	for _, l := range listeners {
@@ -38,7 +38,7 @@ func Dispatch[T any](d *dispatcher, evtType Type, evt T) bool {
 	return true
 }
 
-func (d *dispatcher) On(evtType Type, handler any) {
+func (d *Dispatcher) On(evtType Type, handler any) {
 	listeners := d.listeners[evtType]
 
 	listeners = append(listeners, listener{
@@ -49,7 +49,7 @@ func (d *dispatcher) On(evtType Type, handler any) {
 	d.listeners[evtType] = listeners
 }
 
-func (d *dispatcher) Once(evtType Type, handler any) {
+func (d *Dispatcher) Once(evtType Type, handler any) {
 	listeners := d.listeners[evtType]
 
 	listeners = append(listeners, listener{
@@ -60,7 +60,7 @@ func (d *dispatcher) Once(evtType Type, handler any) {
 	d.listeners[evtType] = listeners
 }
 
-func (d *dispatcher) Off(evtType Type, handler any) {
+func (d *Dispatcher) Off(evtType Type, handler any) {
 	listeners := d.listeners[evtType]
 
 	idx := slices.IndexFunc(listeners, func(l listener) bool {
@@ -74,7 +74,7 @@ func (d *dispatcher) Off(evtType Type, handler any) {
 	d.listeners[evtType] = slices.Delete(listeners, idx, idx+1)
 }
 
-func (d *dispatcher) Has(evtType Type) bool {
+func (d *Dispatcher) Has(evtType Type) bool {
 	_, ok := d.listeners[evtType]
 	return ok
 }
