@@ -1,4 +1,4 @@
-## Install
+## Installation
 
 ```shell
 go get github.com/kodeyeen/event
