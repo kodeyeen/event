@@ -28,13 +28,13 @@ func main() {
 	evtDispatcher := event.NewDispatcher()
 
 	// Register event listener
-	evtDispatcher.On(EventTypeUserRegistered, func(evt UserRegisteredEvent) bool {
+	evtDispatcher.On(EventTypeUserRegistered, func(evt *UserRegisteredEvent) bool {
 		fmt.Printf("New user: %s\n", evt.Username)
 		return true
 	})
 
 	// Dispatch event
-	event.Dispatch(evtDispatcher, EventTypeUserRegistered, UserRegisteredEvent{
+	event.Dispatch(evtDispatcher, EventTypeUserRegistered, &UserRegisteredEvent{
 		Username: "kodeyeen",
 	})
 }
