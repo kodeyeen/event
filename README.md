@@ -4,7 +4,7 @@
 go get github.com/kodeyeen/event
 ```
 
-## Quick start
+## Quickstart
 
 ```go
 package main
