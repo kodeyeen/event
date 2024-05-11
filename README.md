@@ -25,16 +25,16 @@ type UserRegisteredEvent struct {
 
 func main() {
 	// Create an event dispatcher
-	evtDispatcher := event.NewDispatcher()
+	events := event.NewDispatcher()
 
 	// Register event listener
-	evtDispatcher.On(EventTypeUserRegistered, func(evt *UserRegisteredEvent) bool {
-		fmt.Printf("New user: %s\n", evt.Username)
+	events.Listen(EventTypeUserRegistered, func(e *UserRegisteredEvent) bool {
+		fmt.Printf("New user: %s\n", e.Username)
 		return true
 	})
 
 	// Dispatch event
-	event.Dispatch(evtDispatcher, EventTypeUserRegistered, &UserRegisteredEvent{
+	event.Dispatch(events, EventTypeUserRegistered, &UserRegisteredEvent{
 		Username: "kodeyeen",
 	})
 }
