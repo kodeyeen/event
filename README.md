@@ -39,3 +39,8 @@ func main() {
 	})
 }
 ```
+
+## TODO
+
+- Priorities
+- Subscribe to multiple events
