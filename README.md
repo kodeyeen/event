@@ -43,4 +43,4 @@ func main() {
 ## TODO
 
 - Priorities
-- Subscribe to multiple events
+- Subscribe to multiple events at once
