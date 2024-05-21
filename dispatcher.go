@@ -1,9 +1,5 @@
 package event
 
-import (
-	"slices"
-)
-
 type Dispatcher struct {
 	listeners     map[Type]map[int][]Listener
 	minPriorities map[Type]int
@@ -58,24 +54,6 @@ func (d *Dispatcher) ListenFunc(_type Type, listener func(Event) error, priority
 	d.Listen(_type, ListenerFunc(listener), priority)
 }
 
-func (d *Dispatcher) Unlisten(_type Type, listener Listener) {
-	listenerPriorities := d.listeners[_type]
-
-	for priority, listeners := range listenerPriorities {
-		idx := slices.IndexFunc(listeners, func(lis Listener) bool {
-			return lis == listener
-		})
-
-		if idx != -1 {
-			d.listeners[_type][priority] = slices.Delete(listeners, idx, idx+1)
-		}
-	}
-}
-
-func (d *Dispatcher) UnlistenFunc(_type Type, listener func(Event) error) {
-	d.Unlisten(_type, ListenerFunc(listener))
-}
-
 func (d *Dispatcher) HasListener(_type Type) bool {
 	_, ok := d.listeners[_type]
 	return ok
@@ -95,20 +73,4 @@ func (d *Dispatcher) Subscribe(subscriber Subscriber) {
 
 func (d *Dispatcher) SubscribeFunc(subscriber func() map[Type]map[int][]Listener) {
 	d.Subscribe(SubscriberFunc(subscriber))
-}
-
-func (d *Dispatcher) Unsubscribe(subscriber Subscriber) {
-	events := subscriber.SubscribedEvents()
-
-	for _type, listenerPriorities := range events {
-		for _, listeners := range listenerPriorities {
-			for _, listener := range listeners {
-				d.Unlisten(_type, listener)
-			}
-		}
-	}
-}
-
-func (d *Dispatcher) UnsubscribeFunc(subscriber func() map[Type]map[int][]Listener) {
-	d.Unsubscribe(SubscriberFunc(subscriber))
 }
