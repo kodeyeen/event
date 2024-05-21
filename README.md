@@ -15,12 +15,12 @@ import (
 	"github.com/kodeyeen/event"
 )
 
-const (
-	EventTypeUserRegistered event.Type = "user.registered"
-)
-
 type UserRegisteredEvent struct {
 	Username string
+}
+
+func (e *UserRegisteredEvent) Type() event.Type {
+	return "user.registered"
 }
 
 func main() {
@@ -28,19 +28,14 @@ func main() {
 	events := event.NewDispatcher()
 
 	// Register event listener
-	events.Listen(EventTypeUserRegistered, func(e *UserRegisteredEvent) bool {
-		fmt.Printf("New user: %s\n", e.Username)
-		return true
-	})
+	events.Listen("user.registered", event.ListenerFunc(func(e event.Event) error {
+		fmt.Printf("New user: %s\n", e.(*UserRegisteredEvent).Username)
+		return nil
+	}), 0)
 
 	// Dispatch event
-	event.Dispatch(events, EventTypeUserRegistered, &UserRegisteredEvent{
+	events.Dispatch(&UserRegisteredEvent{
 		Username: "kodeyeen",
 	})
 }
 ```
-
-## TODO
-
-- Priorities
-- Subscribe to multiple events at once
