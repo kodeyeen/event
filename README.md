@@ -27,13 +27,13 @@ func main() {
 	// Create an event dispatcher
 	events := event.NewDispatcher()
 
-	// Register event listener
+	// Register an event listener
 	events.Listen("user.registered", event.ListenerFunc(func(e event.Event) error {
 		fmt.Printf("New user: %s\n", e.(*UserRegisteredEvent).Username)
 		return nil
 	}), 0)
 
-	// Dispatch event
+	// Dispatch an event
 	events.Dispatch(&UserRegisteredEvent{
 		Username: "kodeyeen",
 	})
