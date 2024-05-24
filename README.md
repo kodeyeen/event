@@ -16,11 +16,8 @@ import (
 )
 
 type UserRegisteredEvent struct {
+	*event.Base
 	Username string
-}
-
-func (e *UserRegisteredEvent) Type() event.Type {
-	return "user.registered"
 }
 
 func main() {
@@ -35,6 +32,7 @@ func main() {
 
 	// Dispatch an event
 	events.Dispatch(&UserRegisteredEvent{
+		Base: event.NewBase("user.registered")
 		Username: "kodeyeen",
 	})
 }
