@@ -13,9 +13,7 @@ func NewDispatcher() *Dispatcher {
 func (d *Dispatcher) Dispatch(e Event) error {
 	lq := d.listenerQueues[e.Type()]
 
-	lq.handleEvent(e)
-
-	return nil
+	return lq.handleEvent(e)
 }
 
 func (d *Dispatcher) Listen(_type Type, listener Listener, priority int) {
