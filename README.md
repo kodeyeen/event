@@ -1,3 +1,7 @@
+# event
+
+A Go event management package.
+
 ## Installation
 
 ```shell
