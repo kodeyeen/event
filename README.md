@@ -19,25 +19,28 @@ import (
 	"github.com/kodeyeen/event"
 )
 
+// Declare event payload.
+// It's ok to name it with Event suffix though it's not the event itself, but its payload.
 type UserRegisteredEvent struct {
-	*event.Base
 	Username string
 }
 
 func main() {
-	// Create an event dispatcher
+	// Create an event dispatcher.
 	events := event.NewDispatcher()
 
-	// Register an event listener
+	// Register an event listener.
 	events.Listen("user.registered", event.ListenerFunc(func(e event.Event) error {
-		fmt.Printf("New user: %s\n", e.(*UserRegisteredEvent).Username)
+		fmt.Printf("New user: %s\n", e.Payload().(*UserRegisteredEvent).Username)
 		return nil
 	}), 0)
 
-	// Dispatch an event
-	events.Dispatch(&UserRegisteredEvent{
-		Base: event.NewBase("user.registered")
+	// Create an event to be dispatched
+	userRegisteredEvent := event.New("user.registered", &UserRegisteredEvent{
 		Username: "kodeyeen",
 	})
+
+	// Dispatch the event.
+	events.Dispatch(userRegisteredEvent)
 }
 ```
