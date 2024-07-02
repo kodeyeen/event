@@ -2,18 +2,26 @@ package event
 
 type Event interface {
 	Type() Type
+	Payload() any
 }
 
-type Base struct {
-	_type Type
+type event struct {
+	Event
+	_type   Type
+	payload any
 }
 
-func NewBase(_type Type) *Base {
-	return &Base{
-		_type: _type,
+func New(_type Type, payload any) *event {
+	return &event{
+		_type:   _type,
+		payload: payload,
 	}
 }
 
-func (e *Base) Type() Type {
+func (e *event) Type() Type {
 	return e._type
+}
+
+func (e *event) Payload() any {
+	return e.payload
 }
