@@ -36,11 +36,11 @@ func main() {
 	}), 0)
 
 	// Create an event to be dispatched
-	userRegisteredEvent := event.New("user.registered", &UserRegisteredEvent{
+	userRegisteredEvt := event.New("user.registered", &UserRegisteredEvent{
 		Username: "kodeyeen",
 	})
 
 	// Dispatch the event.
-	events.Dispatch(userRegisteredEvent)
+	events.Dispatch(userRegisteredEvt)
 }
 ```
