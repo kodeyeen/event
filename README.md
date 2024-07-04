@@ -14,6 +14,7 @@ go get github.com/kodeyeen/event
 package main
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/kodeyeen/event"
@@ -44,6 +45,6 @@ func main() {
 	})
 
 	// Dispatch the event.
-	dispr.HandleEvent(userRegisteredEvt)
+	dispr.HandleEvent(context.Background(), userRegisteredEvt)
 }
 ```
