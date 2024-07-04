@@ -27,10 +27,10 @@ type UserRegisteredEvent struct {
 
 func main() {
 	// Create an event dispatcher.
-	events := event.NewDispatcher()
+	dispr := event.NewDispatcher()
 
 	// Register an event listener.
-	events.Listen("user.registered", event.ListenerFunc(func(e event.Event) error {
+	dispr.Listen("user.registered", event.ListenerFunc(func(e event.Event) error {
 		fmt.Printf("New user: %s\n", e.Payload().(*UserRegisteredEvent).Username)
 		return nil
 	}), 0)
@@ -41,6 +41,6 @@ func main() {
 	})
 
 	// Dispatch the event.
-	events.Dispatch(userRegisteredEvt)
+	dispr.Dispatch(userRegisteredEvt)
 }
 ```
