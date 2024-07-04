@@ -1,11 +1,13 @@
 package event
 
+import "context"
+
 type Listener interface {
-	HandleEvent(Event) error
+	HandleEvent(context.Context, Event) error
 }
 
 type ListenerFunc func(Event) error
 
-func (f ListenerFunc) HandleEvent(e Event) error {
+func (f ListenerFunc) HandleEvent(ctx context.Context, e Event) error {
 	return f(e)
 }

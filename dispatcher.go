@@ -2,7 +2,8 @@ package event
 
 import (
 	"context"
-	"sync"
+
+	"golang.org/x/sync/errgroup"
 )
 
 type Dispatcher struct {
@@ -15,37 +16,18 @@ func NewDispatcher() *Dispatcher {
 	}
 }
 
-func (d *Dispatcher) HandleEvent(e Event) error {
+func (d *Dispatcher) HandleEvent(ctx context.Context, e Event) error {
 	listeners := d.listeners[e.Type()]
 
-	ctx, cancel := context.WithCancelCause(context.Background())
-	defer cancel(nil)
-
-	wg := new(sync.WaitGroup)
-	wg.Add(len(listeners))
+	g, ctx := errgroup.WithContext(ctx)
 
 	for _, listener := range listeners {
-		go func() {
-			defer wg.Done()
-
-			for {
-				select {
-				case <-ctx.Done():
-					return
-				default:
-				}
-
-				err := listener.HandleEvent(e)
-				if err != nil {
-					cancel(err)
-				}
-			}
-		}()
+		g.Go(func() error {
+			return listener.HandleEvent(ctx, e)
+		})
 	}
 
-	wg.Wait()
-
-	return context.Cause(ctx)
+	return g.Wait()
 }
 
 func (d *Dispatcher) Listen(_type Type, listener Listener) {
