@@ -1,38 +1,63 @@
 package event
 
+import (
+	"context"
+	"sync"
+)
+
 type Dispatcher struct {
-	listenerQueues map[Type]ListenerQueue
+	listeners map[Type][]Listener
 }
 
 func NewDispatcher() *Dispatcher {
 	return &Dispatcher{
-		listenerQueues: make(map[Type]ListenerQueue),
+		listeners: make(map[Type][]Listener),
 	}
 }
 
 func (d *Dispatcher) HandleEvent(e Event) error {
-	lq := d.listenerQueues[e.Type()]
+	listeners := d.listeners[e.Type()]
 
-	return lq.handleEvent(e)
+	ctx, cancel := context.WithCancelCause(context.Background())
+	defer cancel(nil)
+
+	wg := new(sync.WaitGroup)
+	wg.Add(len(listeners))
+
+	for _, listener := range listeners {
+		go func() {
+			defer wg.Done()
+
+			for {
+				select {
+				case <-ctx.Done():
+					return
+				default:
+				}
+
+				err := listener.HandleEvent(e)
+				if err != nil {
+					cancel(err)
+				}
+			}
+		}()
+	}
+
+	wg.Wait()
+
+	return context.Cause(ctx)
 }
 
-func (d *Dispatcher) Listen(_type Type, listener Listener, priority int) {
-	lq := d.listenerQueues[_type]
-
-	lq.enqueue(&ListenerQueueItem{
-		Listener: listener,
-		Priority: priority,
-	})
-
-	d.listenerQueues[_type] = lq
+func (d *Dispatcher) Listen(_type Type, listener Listener) {
+	d.listeners[_type] = append(d.listeners[_type], listener)
 }
 
-func (d *Dispatcher) ListenFunc(_type Type, listener func(Event) error, priority int) {
-	d.Listen(_type, ListenerFunc(listener), priority)
+func (d *Dispatcher) ListenFunc(_type Type, listener func(Event) error) {
+	d.Listen(_type, ListenerFunc(listener))
 }
 
 func (d *Dispatcher) HasListener(_type Type) bool {
-	_, ok := d.listenerQueues[_type]
+	_, ok := d.listeners[_type]
 	return ok
 }
 
@@ -40,12 +65,10 @@ func (d *Dispatcher) Subscribe(subscriber Subscriber) {
 	events := subscriber.SubscribedEvents()
 
 	for _type, listeners := range events {
-		lq := d.listenerQueues[_type]
-		lq.enqueue(listeners...)
-		d.listenerQueues[_type] = lq
+		d.listeners[_type] = append(d.listeners[_type], listeners...)
 	}
 }
 
-func (d *Dispatcher) SubscribeFunc(subscriber func() map[Type]ListenerQueue) {
+func (d *Dispatcher) SubscribeFunc(subscriber func() map[Type][]Listener) {
 	d.Subscribe(SubscriberFunc(subscriber))
 }
