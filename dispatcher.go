@@ -34,7 +34,7 @@ func (d *Dispatcher) Listen(_type Type, listener Listener) {
 	d.listeners[_type] = append(d.listeners[_type], listener)
 }
 
-func (d *Dispatcher) ListenFunc(_type Type, listener func(Event) error) {
+func (d *Dispatcher) ListenFunc(_type Type, listener func(context.Context, Event) error) {
 	d.Listen(_type, ListenerFunc(listener))
 }
 
