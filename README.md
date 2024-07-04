@@ -31,9 +31,12 @@ func main() {
 
 	// Register an event listener.
 	dispr.Listen("user.registered", event.ListenerFunc(func(e event.Event) error {
-		fmt.Printf("New user: %s\n", e.Payload().(*UserRegisteredEvent).Username)
+		ep := e.Payload().(*UserRegisteredEvent)
+
+		fmt.Printf("New user: %s\n", ep.Username)
+
 		return nil
-	}), 0)
+	}))
 
 	// Create an event to be dispatched
 	userRegisteredEvt := event.New("user.registered", &UserRegisteredEvent{
@@ -41,6 +44,6 @@ func main() {
 	})
 
 	// Dispatch the event.
-	dispr.Dispatch(userRegisteredEvt)
+	dispr.HandleEvent(userRegisteredEvt)
 }
 ```
