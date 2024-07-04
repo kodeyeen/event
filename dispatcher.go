@@ -10,7 +10,7 @@ func NewDispatcher() *Dispatcher {
 	}
 }
 
-func (d *Dispatcher) Dispatch(e Event) error {
+func (d *Dispatcher) HandleEvent(e Event) error {
 	lq := d.listenerQueues[e.Type()]
 
 	return lq.handleEvent(e)
