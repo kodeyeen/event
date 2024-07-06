@@ -40,7 +40,7 @@ func main() {
 	})
 
 	// Create an event to be dispatched
-	userRegisteredEvt := event.New("user.registered", &UserRegisteredEvent{
+	userRegisteredEvt := event.WithPayload("user.registered", &UserRegisteredEvent{
 		Username: "kodeyeen",
 	})
 
