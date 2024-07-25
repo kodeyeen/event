@@ -1,5 +1,7 @@
 package event
 
+type Type string
+
 type Event interface {
 	Type() Type
 	Payload() any
