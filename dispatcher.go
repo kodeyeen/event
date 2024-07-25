@@ -44,13 +44,13 @@ func (d *Dispatcher) HasListener(_type Type) bool {
 }
 
 func (d *Dispatcher) Subscribe(subscriber Subscriber) {
-	events := subscriber.SubscribedEvents()
+	events := subscriber.SubscribedEvents().(map[Type][]Listener)
 
 	for _type, listeners := range events {
 		d.listeners[_type] = append(d.listeners[_type], listeners...)
 	}
 }
 
-func (d *Dispatcher) SubscribeFunc(subscriber func() map[Type][]Listener) {
+func (d *Dispatcher) SubscribeFunc(subscriber func() any) {
 	d.Subscribe(SubscriberFunc(subscriber))
 }

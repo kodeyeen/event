@@ -1,11 +1,11 @@
 package event
 
 type Subscriber interface {
-	SubscribedEvents() map[Type][]Listener
+	SubscribedEvents() any
 }
 
-type SubscriberFunc func() map[Type][]Listener
+type SubscriberFunc func() any
 
-func (f SubscriberFunc) SubscribedEvents() map[Type][]Listener {
+func (f SubscriberFunc) SubscribedEvents() any {
 	return f()
 }
