@@ -16,14 +16,14 @@ func NewDispatcher() *Dispatcher {
 	}
 }
 
-func (d *Dispatcher) HandleEvent(ctx context.Context, e Event) error {
-	listeners := d.listeners[e.Type()]
+func (d *Dispatcher) HandleEvent(ctx context.Context, ev Event) error {
+	listeners := d.listeners[ev.Type()]
 
 	g, ctx := errgroup.WithContext(ctx)
 
 	for _, listener := range listeners {
 		g.Go(func() error {
-			return listener.HandleEvent(ctx, e)
+			return listener.HandleEvent(ctx, ev)
 		})
 	}
 

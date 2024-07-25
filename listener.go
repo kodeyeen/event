@@ -8,6 +8,6 @@ type Listener interface {
 
 type ListenerFunc func(context.Context, Event) error
 
-func (f ListenerFunc) HandleEvent(ctx context.Context, e Event) error {
-	return f(ctx, e)
+func (f ListenerFunc) HandleEvent(ctx context.Context, ev Event) error {
+	return f(ctx, ev)
 }

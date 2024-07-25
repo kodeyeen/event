@@ -15,11 +15,11 @@ func Empty(_type Type) Event {
 	return &emptyEvt{_type: _type}
 }
 
-func (e *emptyEvt) Type() Type {
-	return e._type
+func (ev *emptyEvt) Type() Type {
+	return ev._type
 }
 
-func (e *emptyEvt) Payload() any {
+func (ev *emptyEvt) Payload() any {
 	return nil
 }
 
@@ -37,10 +37,10 @@ func WithPayload(_type Type, payload any) Event {
 	}
 }
 
-func (e *payloadEvt) Type() Type {
-	return e._type
+func (ev *payloadEvt) Type() Type {
+	return ev._type
 }
 
-func (e *payloadEvt) Payload() any {
-	return e.payload
+func (ev *payloadEvt) Payload() any {
+	return ev.payload
 }
